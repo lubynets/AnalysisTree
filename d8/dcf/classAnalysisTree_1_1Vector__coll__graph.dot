@@ -1,0 +1,6 @@
+digraph "AnalysisTree::Vector&lt; T &gt;"
+{
+  edge [fontname="Helvetica",fontsize="10",labelfontname="Helvetica",labelfontsize="10"];
+  node [fontname="Helvetica",fontsize="10",shape=record];
+  Node1 [label="{AnalysisTree::Vector\< T \>\n|# field_\l|+ Vector()\l+ Vector()\l+ Vector()\l+ operator=()\l+ operator=()\l+ ~Vector()\l+ SetField()\l+ GetField()\l+ Resize()\l}",height=0.2,width=0.4,color="black", fillcolor="grey75", style="filled", fontcolor="black"];
+}

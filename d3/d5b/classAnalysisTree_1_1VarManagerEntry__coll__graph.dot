@@ -1,0 +1,6 @@
+digraph "AnalysisTree::VarManagerEntry"
+{
+  edge [fontname="Helvetica",fontsize="10",labelfontname="Helvetica",labelfontsize="10"];
+  node [fontname="Helvetica",fontsize="10",shape=record];
+  Node1 [label="{AnalysisTree::VarManager\lEntry\n||+ VarManagerEntry()\l+ VarManagerEntry()\l+ Init()\l+ FillValues()\l+ AddVariable()\l+ GetValues()\l+ GetBranchNames()\l+ GetBranches()\l+ GetNumberOfBranches()\l+ GetCuts()\land 6 more...\l}",height=0.2,width=0.4,color="black", fillcolor="grey75", style="filled", fontcolor="black"];
+}

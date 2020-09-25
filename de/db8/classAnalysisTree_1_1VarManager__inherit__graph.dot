@@ -1,0 +1,10 @@
+digraph "AnalysisTree::VarManager"
+{
+  edge [fontname="Helvetica",fontsize="10",labelfontname="Helvetica",labelfontsize="10"];
+  node [fontname="Helvetica",fontsize="10",shape=record];
+  Node1 [label="{AnalysisTree::VarManager\n|# entries_\l# branches_\l# matching_\l# cuts_map_\l|+ VarManager()\l+ AddEntry()\l+ Init()\l+ Exec()\l+ Finish()\l+ SetCutsMap()\l+ GetValues()\l+ GetBranches()\l+ Branches()\l+ GetBranch()\l+ FillBranchNames()\l+ GetVarEntries()\l+ VarEntries()\l}",height=0.2,width=0.4,color="black", fillcolor="grey75", style="filled", fontcolor="black"];
+  Node2 -> Node1 [dir="back",color="midnightblue",fontsize="10",style="solid",arrowtail="onormal",fontname="Helvetica"];
+  Node2 [label="{AnalysisTree::FillTask\n|# in_chain_\l# config_\l# data_header_\l# out_file_\l# out_tree_\l# out_config_\l# in_branches_\l# out_branch_\l|+ FillTask()\l+ ~FillTask()\l+ Init()\l+ Exec()\l+ Finish()\l+ SetInChain()\l+ SetInConfiguration()\l+ SetOutTree()\l+ SetOutConfiguration()\l+ SetDataHeader()\l+ SetOutFile()\l+ SetInputBranchNames()\l+ SetOutputBranchName()\l+ GetOutputBranchName()\l+ GetInputBranchNames()\l}",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$d2/d77/classAnalysisTree_1_1FillTask.html"];
+  Node1 -> Node3 [dir="back",color="midnightblue",fontsize="10",style="solid",arrowtail="onormal",fontname="Helvetica"];
+  Node3 [label="{AnalysisTree::PlainTreeFiller\n|# plain_tree_\l# tree_name_\l# branch_name_\l# vars_\l|+ PlainTreeFiller()\l+ AddBranch()\l+ Init()\l+ Exec()\l+ Finish()\l}",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$d0/d41/classAnalysisTree_1_1PlainTreeFiller.html"];
+}
