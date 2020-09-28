@@ -17,7 +17,11 @@ string(REPLACE ".cpp" ".hpp" HEADERS "${SOURCES}")
 list(APPEND HEADERS "Constants.hpp" "ToyMC.hpp")
 
 add_library(AnalysisTreeBase SHARED ${SOURCES} G__AnalysisTreeBase.cxx)
-ROOT_GENERATE_DICTIONARY(G__AnalysisTreeBase ${HEADERS} LINKDEF AnalysisTreeCoreLinkDef.h)
+if(${ROOT_VERSION} GREATER_EQUAL 6.18)
+  ROOT_GENERATE_DICTIONARY(G__AnalysisTreeBase ${HEADERS} LINKDEF AnalysisTreeCoreLinkDef.h)
+else()
+  GGS_ROOT_GENERATE_DICTIONARY(G__AnalysisTreeBase ${HEADERS} LINKDEF AnalysisTreeCoreLinkDef.h)
+endif()
 target_link_libraries(AnalysisTreeBase ${ROOT_LIBRARIES})
 add_custom_command(TARGET AnalysisTreeBase PRE_BUILD
         COMMAND ${CMAKE_COMMAND} ARGS -E make_directory ${CMAKE_BINARY_DIR}/include/AnalysisTree

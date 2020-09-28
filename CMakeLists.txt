@@ -5,6 +5,8 @@ cmake_minimum_required(VERSION 3.5)
 project(AnalysisTree CXX)
 set(PROJECT_VERSION 1.1)
 
+include(AnalysisTree.cmake)
+
 if(NOT DEFINED CMAKE_BUILD_TYPE)
     set(CMAKE_BUILD_TYPE RELEASE)
 endif()
