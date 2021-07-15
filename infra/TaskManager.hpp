@@ -51,6 +51,7 @@ class TaskManager {
   */
   virtual void Init();
   virtual void Run(long long nEvents);
+  virtual void Run(std::vector<int> eventnumbers);
   virtual void Finish();
 
   void AddTask(Task* task) { tasks_.emplace_back(task); }

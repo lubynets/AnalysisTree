@@ -72,6 +72,7 @@ void TaskManager::Run(long long nEvents) {
 
   for (long long iEvent = 0; iEvent < nEvents; ++iEvent) {
     if (read_in_tree_) {
+//       std::cout << "eve # " << iEvent << "\n";
       chain_->GetEntry(iEvent);
     }
     Exec();
@@ -80,6 +81,23 @@ void TaskManager::Run(long long nEvents) {
   auto end = std::chrono::system_clock::now();
   std::chrono::duration<double> elapsed_seconds = end - start;
   std::cout << "elapsed time: " << elapsed_seconds.count() << ", per event: " << elapsed_seconds.count() / nEvents << "s\n";
+}
+
+void TaskManager::Run(std::vector<int> eventnumbers) {
+
+  std::cout << "AnalysisTree::Manager::Run" << std::endl;
+  auto start = std::chrono::system_clock::now();
+
+  for (auto& iEvent : eventnumbers) {
+    if (read_in_tree_) {
+      chain_->GetEntry(iEvent);
+    }
+    Exec();
+  }// Event loop
+
+  auto end = std::chrono::system_clock::now();
+  std::chrono::duration<double> elapsed_seconds = end - start;
+  std::cout << "elapsed time: " << elapsed_seconds.count() << ", per event: " << elapsed_seconds.count() / eventnumbers.size() << "s\n";
 }
 
 void TaskManager::Finish() {
