@@ -79,6 +79,23 @@ void PlainTreeFiller::Init() {
 
   if (vars_.size() != vars.size()) throw std::runtime_error("PlainTreeFiller::Init(): vars_.size() != vars.size()");
 
+  std::vector<std::string> leafNames;
+  for (int iVar = 0, nVars = vars.size(); iVar < nVars; ++iVar) {
+    leafNames.emplace_back(vars[iVar].GetName());
+  }
+
+  for (const auto& fti : fields_to_ignore_) {
+    if (std::find(leafNames.begin(), leafNames.end(), fti) == leafNames.end()) {
+      std::cout << "WARNING PlainTreeFiller::Init(): field " << fti << " is set to be ignored, but it is absent among input fields\n";
+    }
+  }
+
+  for (const auto& ftp : fields_to_preserve_) {
+    if (std::find(leafNames.begin(), leafNames.end(), ftp) == leafNames.end()) {
+      std::cout << "WARNING PlainTreeFiller::Init(): field " << ftp << " is set to be preserved, but it is absent among input fields\n";
+    }
+  }
+
   file_ = TFile::Open(file_name_.c_str(), "recreate");
   plain_tree_ = new TTree(tree_name_.c_str(), "Plain Tree");
   plain_tree_->SetAutoSave(0);
