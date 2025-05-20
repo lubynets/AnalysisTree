@@ -33,6 +33,15 @@ void PlainTreeFiller::SetFieldsToPreserve(const std::vector<std::string>& fields
   }
 }
 
+void PlainTreeFiller::SetFieldsToRename(const std::vector<std::pair<std::string, std::string>>& fields_to_rename) {
+  if (branch_name_.empty()) {
+    throw std::runtime_error("PlainTreeFiller::SetFieldsToRename() must be called after PlainTreeFiller::AddBranch()\n");
+  }
+  for (const auto& ftr : fields_to_rename) {
+    fields_to_rename_.emplace((branch_name_ + "." + ftr.first).c_str(), (branch_name_ + "." + ftr.second).c_str());
+  }
+}
+
 void PlainTreeFiller::Init() {
   if (is_ignore_defual_fields_) {
     std::vector<std::string> defaultFieldsNames;
@@ -103,6 +112,9 @@ void PlainTreeFiller::Init() {
     std::string leaf_name = leafNames.at(iLeaf);
     if (!fields_to_ignore_.empty() && std::find(fields_to_ignore_.begin(), fields_to_ignore_.end(), leaf_name) != fields_to_ignore_.end()) continue;
     if (!fields_to_preserve_.empty() && std::find(fields_to_preserve_.begin(), fields_to_preserve_.end(), leaf_name) == fields_to_preserve_.end()) continue;
+    if (!fields_to_rename_.empty() && fields_to_rename_.find(leaf_name) != fields_to_rename_.end()) {
+      leaf_name = fields_to_rename_.at(leaf_name);
+    }
     if (!is_prepend_leaves_with_branchname_) leaf_name.erase(0, branch_name_.size() + 1);
     std::replace(leaf_name.begin(), leaf_name.end(), '.', '_');
     if (vars_.at(iLeaf).type_ == Types::kFloat) plain_tree_->Branch(leaf_name.c_str(), &vars_.at(iLeaf).float_, Form("%s/F", leaf_name.c_str()));
