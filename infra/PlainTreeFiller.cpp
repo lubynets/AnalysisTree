@@ -99,17 +99,17 @@ void PlainTreeFiller::Init() {
   file_ = TFile::Open(file_name_.c_str(), "recreate");
   plain_tree_ = new TTree(tree_name_.c_str(), "Plain Tree");
   plain_tree_->SetAutoSave(0);
-  for (size_t i = 0; i < vars.size(); ++i) {
-    std::string leaf_name = vars[i].GetName();
+  for (int iLeaf = 0, nLeafs = leafNames.size(); iLeaf < nLeafs; ++iLeaf) {
+    std::string leaf_name = leafNames.at(iLeaf);
     if (!fields_to_ignore_.empty() && std::find(fields_to_ignore_.begin(), fields_to_ignore_.end(), leaf_name) != fields_to_ignore_.end()) continue;
     if (!fields_to_preserve_.empty() && std::find(fields_to_preserve_.begin(), fields_to_preserve_.end(), leaf_name) == fields_to_preserve_.end()) continue;
     if (!is_prepend_leaves_with_branchname_) leaf_name.erase(0, branch_name_.size() + 1);
     std::replace(leaf_name.begin(), leaf_name.end(), '.', '_');
-    if (vars_.at(i).type_ == Types::kFloat) plain_tree_->Branch(leaf_name.c_str(), &vars_.at(i).float_, Form("%s/F", leaf_name.c_str()));
-    else if (vars_.at(i).type_ == Types::kInteger)
-      plain_tree_->Branch(leaf_name.c_str(), &vars_.at(i).int_, Form("%s/I", leaf_name.c_str()));
-    else if (vars_.at(i).type_ == Types::kBool)
-      plain_tree_->Branch(leaf_name.c_str(), &vars_.at(i).bool_, Form("%s/O", leaf_name.c_str()));
+    if (vars_.at(iLeaf).type_ == Types::kFloat) plain_tree_->Branch(leaf_name.c_str(), &vars_.at(iLeaf).float_, Form("%s/F", leaf_name.c_str()));
+    else if (vars_.at(iLeaf).type_ == Types::kInteger)
+      plain_tree_->Branch(leaf_name.c_str(), &vars_.at(iLeaf).int_, Form("%s/I", leaf_name.c_str()));
+    else if (vars_.at(iLeaf).type_ == Types::kBool)
+      plain_tree_->Branch(leaf_name.c_str(), &vars_.at(iLeaf).bool_, Form("%s/O", leaf_name.c_str()));
   }
 
   for (auto& cm : cuts_map_) {
