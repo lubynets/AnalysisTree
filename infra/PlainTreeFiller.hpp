@@ -42,6 +42,8 @@ class PlainTreeFiller : public AnalysisTask {
   void SetIsPrependLeavesWithBranchName(bool is = true) { is_prepend_leaves_with_branchname_ = is; }
 
  protected:
+  void CheckIgnorePreserveRenameFields(const std::vector<std::string>& leafNames) const;
+
   TFile* file_{nullptr};
   TTree* plain_tree_{nullptr};
 

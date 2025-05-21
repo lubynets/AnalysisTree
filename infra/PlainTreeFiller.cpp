@@ -42,6 +42,26 @@ void PlainTreeFiller::SetFieldsToRename(const std::vector<std::pair<std::string,
   }
 }
 
+void PlainTreeFiller::CheckIgnorePreserveRenameFields(const std::vector<std::string>& leafNames) const {
+  for (const auto& fti : fields_to_ignore_) {
+    if (std::find(leafNames.begin(), leafNames.end(), fti) == leafNames.end()) {
+      std::cout << "WARNING PlainTreeFiller::CheckIgnorePreserveRenameFields(): field " << fti << " is set to be ignored, but it is absent among input fields\n";
+    }
+  }
+
+  for (const auto& ftp : fields_to_preserve_) {
+    if (std::find(leafNames.begin(), leafNames.end(), ftp) == leafNames.end()) {
+      std::cout << "WARNING PlainTreeFiller::CheckIgnorePreserveRenameFields(): field " << ftp << " is set to be preserved, but it is absent among input fields\n";
+    }
+  }
+
+  for (const auto& ftr : fields_to_rename_) {
+    if (std::find(leafNames.begin(), leafNames.end(), ftr.first) == leafNames.end()) {
+      std::cout << "WARNING PlainTreeFiller::CheckIgnorePreserveRenameFields(): field " << ftr.first << " is set to be renamed, but it is absent among input fields\n";
+    }
+  }
+}
+
 void PlainTreeFiller::Init() {
   if (is_ignore_defual_fields_) {
     std::vector<std::string> defaultFieldsNames;
@@ -92,18 +112,7 @@ void PlainTreeFiller::Init() {
   for (int iVar = 0, nVars = vars.size(); iVar < nVars; ++iVar) {
     leafNames.emplace_back(vars[iVar].GetName());
   }
-
-  for (const auto& fti : fields_to_ignore_) {
-    if (std::find(leafNames.begin(), leafNames.end(), fti) == leafNames.end()) {
-      std::cout << "WARNING PlainTreeFiller::Init(): field " << fti << " is set to be ignored, but it is absent among input fields\n";
-    }
-  }
-
-  for (const auto& ftp : fields_to_preserve_) {
-    if (std::find(leafNames.begin(), leafNames.end(), ftp) == leafNames.end()) {
-      std::cout << "WARNING PlainTreeFiller::Init(): field " << ftp << " is set to be preserved, but it is absent among input fields\n";
-    }
-  }
+  CheckIgnorePreserveRenameFields(leafNames);
 
   file_ = TFile::Open(file_name_.c_str(), "recreate");
   plain_tree_ = new TTree(tree_name_.c_str(), "Plain Tree");
