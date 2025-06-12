@@ -83,7 +83,7 @@ void Cuts::AddCut(const SimpleCut& cut) {
 }
 
 void Cuts::AddCuts(const std::vector<SimpleCut>& cuts) {
-  for (auto& cut : cuts) {
+  for (const auto& cut : cuts) {
     AddCut(cut);
   }
 }

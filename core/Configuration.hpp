@@ -102,7 +102,7 @@ class Configuration : public TObject {
 
   static MatchingIndex MakeMatchingIndex(const std::vector<MatchingConfig>& matches) {
     MatchingIndex result;
-    for (auto& match : matches) {
+    for (const auto& match : matches) {
       std::array<std::string, 2> map_key{match.GetFirstBranchName(), match.GetSecondBranchName()};
       auto emplace_result = result.emplace(map_key, match.GetDataBranchName());
       if (!emplace_result.second) {
@@ -114,7 +114,7 @@ class Configuration : public TObject {
 
   static std::vector<MatchingConfig> MakeMatchConfigsFromIndex(const MatchingIndex& matching_index) {
     std::vector<MatchingConfig> result;
-    for (auto& matching_index_element : matching_index) {
+    for (const auto& matching_index_element : matching_index) {
       result.emplace_back(matching_index_element.first[0],
                           matching_index_element.first[1],
                           matching_index_element.second);
@@ -130,10 +130,10 @@ class Configuration : public TObject {
     * @param other
     */
   void Merge(const Configuration& other) {
-    for (auto& other_branch : other.branches_) {
+    for (const auto& other_branch : other.branches_) {
       const auto other_id = other_branch.second.GetId();
       const auto other_name = other_branch.second.GetName();
-      for (auto& local_branch : branches_) {
+      for (const auto& local_branch : branches_) {
         if (other_id == local_branch.second.GetId()) {
           throw std::runtime_error("Configurations contain branches with the same id-s");
         }

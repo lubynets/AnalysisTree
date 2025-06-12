@@ -19,7 +19,7 @@ void PlainTreeFiller::SetFieldsToIgnore(const std::vector<std::string>& fields_t
   if (branch_name_.empty()) {
     throw std::runtime_error("PlainTreeFiller::SetFieldsToIgnore() must be called after PlainTreeFiller::AddBranch()\n");
   }
-  for (auto& fti : fields_to_ignore) {
+  for (const auto& fti : fields_to_ignore) {
     fields_to_ignore_.emplace_back((branch_name_ + "." + fti).c_str());
   }
 }
@@ -28,7 +28,7 @@ void PlainTreeFiller::SetFieldsToPreserve(const std::vector<std::string>& fields
   if (branch_name_.empty()) {
     throw std::runtime_error("PlainTreeFiller::SetFieldsToPreserve() must be called after PlainTreeFiller::AddBranch()\n");
   }
-  for (auto& fti : fields_to_preserve) {
+  for (const auto& fti : fields_to_preserve) {
     fields_to_preserve_.emplace_back((branch_name_ + "." + fti).c_str());
   }
 }
@@ -68,8 +68,8 @@ void PlainTreeFiller::Init() {
     auto mapF = config_->GetBranchConfig(branch_name_).GetMap<float>();
     auto mapI = config_->GetBranchConfig(branch_name_).GetMap<int>();
     auto mapB = config_->GetBranchConfig(branch_name_).GetMap<bool>();
-    for (auto& m : {mapF, mapI, mapB}) {
-      for (auto& me : m) {
+    for (const auto& m : {mapF, mapI, mapB}) {
+      for (const auto& me : m) {
         if (me.second.id_ < 0) defaultFieldsNames.emplace_back(me.first);
       }
     }
@@ -133,7 +133,7 @@ void PlainTreeFiller::Init() {
       plain_tree_->Branch(leaf_name.c_str(), &vars_.at(iLeaf).bool_, Form("%s/O", leaf_name.c_str()));
   }
 
-  for (auto& cm : cuts_map_) {
+  for (const auto& cm : cuts_map_) {
     if (cm.second != nullptr) {
       cm.second->Init(*(TaskManager::GetInstance()->GetChain()->GetConfiguration()));
     }

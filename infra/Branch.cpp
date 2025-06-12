@@ -107,7 +107,7 @@ void Branch::ClearChannels() {
 
 void Branch::CloneVariables(const AnalysisTree::BranchConfig& other) {
   auto import_fields_from_map = [this](const std::map<std::string, ConfigElement>& map, AnalysisTree::Types type) {
-    for (auto& element : map) {
+    for (const auto& element : map) {
       auto field_name = element.first;
       if (config_.HasField(field_name)) {
         std::cout << "Field '" << field_name << "' already exists" << std::endl;
@@ -190,7 +190,7 @@ void Branch::CreateMapping(const Branch* other, std::string branch_name_prefix) 
 
   std::cout << "New cached mapping " << other->config_.GetName() << " --> " << config_.GetName() << std::endl;
   FieldsMapping fields_mapping;
-  for (auto& field_name_other : other->GetFieldNames()) {
+  for (const auto& field_name_other : other->GetFieldNames()) {
     std::string field_name_target = branch_name_prefix + field_name_other;
     if (!config_.HasField(field_name_target)) { continue; }
     fields_mapping.field_pairs.emplace_back(other->GetField(field_name_other), GetField(field_name_target));
@@ -208,7 +208,7 @@ void Branch::UpdateConfigHash() {
 std::vector<std::string> Branch::GetFieldNames() const {
   std::vector<std::string> result;
   auto fill_vector_from_map = [&result](const std::map<std::string, ConfigElement>& fields_map) -> void {
-    for (auto& element : fields_map) {
+    for (const auto& element : fields_map) {
       result.push_back(element.first);
     }
   };

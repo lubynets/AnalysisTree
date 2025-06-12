@@ -19,7 +19,7 @@ inline std::size_t BranchConfigHasher(const AnalysisTree::BranchConfig& config) 
   hash_combine(hash, static_cast<AnalysisTree::ShortInt_t>(config.GetType()));
 
   auto hash_fields = [&hash](const std::map<std::string, AnalysisTree::ConfigElement>& fields_map, Type field_type) {
-    for (auto& field : fields_map) {
+    for (const auto& field : fields_map) {
       hash_combine(hash, field.first, field.second.id_, static_cast<AnalysisTree::ShortInt_t>(field_type));
     }
   };

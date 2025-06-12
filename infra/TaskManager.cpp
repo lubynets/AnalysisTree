@@ -74,12 +74,12 @@ void TaskManager::InitOutChain() {
     assert(configuration_ && data_header_ && chain_);// input should exist
     configuration_ = chain_->CloneConfiguration();
     *(data_header_) = *(chain_->GetDataHeader());
-    for (auto& brex : branches_exclude_) {
+    for (const auto& brex : branches_exclude_) {
       if (chain_->CheckBranchExistence(brex) == 1) {
         throw std::runtime_error("AnalysisTree::TaskManager::InitOutChain - Tree in the input file does not support selective cloning");
       }
       chain_->SetBranchStatus((brex + ".*").c_str(), false);
-      for (auto& maex : configuration_->GetMatchesOfBranch(brex)) {
+      for (const auto& maex : configuration_->GetMatchesOfBranch(brex)) {
         chain_->SetBranchStatus((maex + ".*").c_str(), false);
       }
       configuration_->RemoveBranchConfig(brex);
