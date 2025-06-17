@@ -93,12 +93,18 @@ void TaskManager::InitOutChain() {
 }
 
 void TaskManager::Run(long long nEvents) {
+  if (chain_->GetEntries() > 0) {
+    nEvents = nEvents < 0 || nEvents > chain_->GetEntries() ? chain_->GetEntries() : nEvents;
+  }
+  Run(0, nEvents);
+}
 
+void TaskManager::Run(long long nEventFrom, long long nEvents) {
   std::cout << "AnalysisTree::Manager::Run" << std::endl;
   auto start = std::chrono::system_clock::now();
 
-  if (chain_->GetEntries() > 0) {
-    nEvents = nEvents < 0 || nEvents > chain_->GetEntries() ? chain_->GetEntries() : nEvents;
+  if (nEventFrom + nEvents > chain_->GetEntries()) {
+    throw std::runtime_error("TaskManager::Run() - nEventFrom + nEvents > chain_->GetEntries()");
   }
 
   if (verbosity_frequency_ > 0) {
@@ -107,7 +113,7 @@ void TaskManager::Run(long long nEvents) {
     verbosity_period_ = static_cast<int>(std::pow(10, vPlog));
   }
 
-  for (long long iEvent = 0; iEvent < nEvents; ++iEvent) {
+  for (long long iEvent = nEventFrom; iEvent < nEventFrom + nEvents; ++iEvent) {
     if (verbosity_period_ > 0 && iEvent % verbosity_period_ == 0) {
       std::cout << "Event no " << iEvent << "\n";
     }
