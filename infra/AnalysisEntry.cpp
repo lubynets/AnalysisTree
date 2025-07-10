@@ -9,7 +9,7 @@
 namespace AnalysisTree {
 
 AnalysisEntry::~AnalysisEntry() {
-  for (auto& br : branches_) {
+  for (const auto& br : branches_) {
     delete br.first;
   }
 }
@@ -45,7 +45,7 @@ bool AnalysisEntry::ApplyCutOnBranches(std::vector<const Branch*>& br, std::vect
     id_vec.emplace_back(br.at(i)->GetId());
   }
   bool result = ok && (!cuts_ || cuts_->Apply(bch_vec, id_vec));
-  for (auto& bv : bch_vec) {
+  for (const auto& bv : bch_vec) {
     delete bv;
   }
   return result;
@@ -77,7 +77,7 @@ double AnalysisEntry::FillVariable(const Variable& var, std::vector<const Branch
     id_vec.emplace_back(br.at(i)->GetId());
   }
   double result = var.GetValue(bch_vec, id_vec);
-  for (auto& bv : bch_vec) {
+  for (const auto& bv : bch_vec) {
     delete bv;
   }
   return result;
@@ -116,7 +116,7 @@ void AnalysisEntry::FillFromEveHeaders() {
   br_vec.reserve(branches_.size());
   cuts_vec.reserve(branches_.size());
   id_vec.reserve(branches_.size());
-  for (auto& br : branches_) {
+  for (const auto& br : branches_) {
     br_vec.emplace_back(br.first);
     cuts_vec.emplace_back(br.second);
     id_vec.emplace_back(0);
@@ -154,7 +154,7 @@ void AnalysisEntry::FillFromOneChannalizedBranch() {
     br_vec.emplace_back(br.first);
     cuts_vec.emplace_back(br.second);
   }
-  for (auto& ehi : eve_header_indices_) {
+  for (const auto& ehi : eve_header_indices_) {
     id_vec.at(ehi) = 0;
   }
 
@@ -195,7 +195,7 @@ void AnalysisEntry::FillFromTwoChannalizedBranches() {
     br_vec.emplace_back(br.first);
     cuts_vec.emplace_back(br.second);
   }
-  for (auto& ehi : eve_header_indices_) {
+  for (const auto& ehi : eve_header_indices_) {
     id_vec.at(ehi) = 0;
   }
 
@@ -216,7 +216,7 @@ void AnalysisEntry::FillFromTwoChannalizedBranches() {
 }
 
 void AnalysisEntry::FillBranchNames() {
-  for (auto& var : vars_) {
+  for (const auto& var : vars_) {
     const auto& br = var.GetBranches();
     branch_names_.insert(br.begin(), br.end());
   }
@@ -236,7 +236,7 @@ void AnalysisEntry::Init(const Configuration& conf, const std::map<std::string, 
   var4weight_.Init(conf);
 
   int i{0};
-  for (auto& bn : branch_names_) {
+  for (const auto& bn : branch_names_) {
     if (conf.GetBranchConfig(bn).GetType() == DetType::kEventHeader) {
       eve_header_indices_.push_back(i);
     } else {

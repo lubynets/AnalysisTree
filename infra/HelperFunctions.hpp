@@ -3,6 +3,8 @@
 
 #include "SimpleCut.hpp"
 
+#include <TFile.h>
+
 #include <sstream>
 #include <string>
 #include <vector>
@@ -99,6 +101,15 @@ inline std::vector<T> MergeVectors(const std::vector<T>& vec1, const std::vector
 template<typename T, typename... Args>
 inline std::vector<T> MergeVectors(const std::vector<T>& vec1, const std::vector<T>& vec2, const Args&... args) {
   return MergeVectors(vec1, MergeVectors(vec2, args...));
+}
+
+template<typename T>
+inline T* GetObjectWithNullptrCheck(TFile* fileIn, const std::string& objectName) {
+  T* ptr = fileIn->Get<T>(objectName.c_str());
+  if (ptr == nullptr) {
+    throw std::runtime_error("HelperFunctions::GetObjectWithNullptrCheck() - object " + objectName + " in file " + fileIn->GetName() + " is missing");
+  }
+  return ptr;
 }
 
 }// namespace HelperFunctions

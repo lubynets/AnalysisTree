@@ -74,12 +74,12 @@ void TaskManager::InitOutChain() {
     assert(configuration_ && data_header_ && chain_);// input should exist
     configuration_ = chain_->CloneConfiguration();
     *(data_header_) = *(chain_->GetDataHeader());
-    for (auto& brex : branches_exclude_) {
+    for (const auto& brex : branches_exclude_) {
       if (chain_->CheckBranchExistence(brex) == 1) {
         throw std::runtime_error("AnalysisTree::TaskManager::InitOutChain - Tree in the input file does not support selective cloning");
       }
       chain_->SetBranchStatus((brex + ".*").c_str(), false);
-      for (auto& maex : configuration_->GetMatchesOfBranch(brex)) {
+      for (const auto& maex : configuration_->GetMatchesOfBranch(brex)) {
         chain_->SetBranchStatus((maex + ".*").c_str(), false);
       }
       configuration_->RemoveBranchConfig(brex);
@@ -93,12 +93,18 @@ void TaskManager::InitOutChain() {
 }
 
 void TaskManager::Run(long long nEvents) {
+  if (chain_->GetEntries() > 0) {
+    nEvents = nEvents < 0 || nEvents > chain_->GetEntries() ? chain_->GetEntries() : nEvents;
+  }
+  Run(0, nEvents);
+}
 
+void TaskManager::Run(long long nEventFrom, long long nEvents) {
   std::cout << "AnalysisTree::Manager::Run" << std::endl;
   auto start = std::chrono::system_clock::now();
 
-  if (chain_->GetEntries() > 0) {
-    nEvents = nEvents < 0 || nEvents > chain_->GetEntries() ? chain_->GetEntries() : nEvents;
+  if (nEventFrom + nEvents > chain_->GetEntries() && chain_->GetEntries() > 0) {
+    throw std::runtime_error("TaskManager::Run() - nEventFrom + nEvents > chain_->GetEntries()");
   }
 
   if (verbosity_frequency_ > 0) {
@@ -107,7 +113,7 @@ void TaskManager::Run(long long nEvents) {
     verbosity_period_ = static_cast<int>(std::pow(10, vPlog));
   }
 
-  for (long long iEvent = 0; iEvent < nEvents; ++iEvent) {
+  for (long long iEvent = nEventFrom; iEvent < nEventFrom + nEvents; ++iEvent) {
     if (verbosity_period_ > 0 && iEvent % verbosity_period_ == 0) {
       std::cout << "Event no " << iEvent << "\n";
     }

@@ -35,7 +35,7 @@ void BranchChannel::CopyContent(const BranchChannel& other, std::string branch_n
   /* Eval mapping */
   const auto& field_pairs = mapping_it->second.field_pairs;
 
-  for (auto& field_pair /* src : dst */ : field_pairs) {
+  for (const auto& field_pair /* src : dst */ : field_pairs) {
     this->SetValue(field_pair.second, other.Value(field_pair.first));
   }
 }

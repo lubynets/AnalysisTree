@@ -113,7 +113,7 @@ void Chain::InitPointersToBranches(std::set<std::string> names) {
     if (CheckBranchExistence(branch.first) == 1)
       ANALYSISTREE_UTILS_VISIT(set_branch_address_struct(this, branch.first), branch.second);
     else if (CheckBranchExistence(branch.first) == 2)
-      ANALYSISTREE_UTILS_VISIT(set_branch_address_struct(this, (branch.first + ".").c_str()), branch.second);
+      ANALYSISTREE_UTILS_VISIT(set_branch_address_struct(this, branch.first + "."), branch.second);
     else
       throw std::runtime_error("AnalysisTree::InitPointersToBranches - Branch " + branch.first + " does not exist");
   }
@@ -225,7 +225,7 @@ std::vector<TChain*> Chain::GetTChains() {
 int Chain::CheckBranchExistence(const std::string& branchname) {
   auto v_chains = this->GetTChains();
 
-  for (auto& ch : v_chains) {
+  for (const auto& ch : v_chains) {
     auto* lob = ch->GetListOfBranches();
     const int Nbranches = lob->GetEntries();
     for (int i = 0; i < Nbranches; i++) {

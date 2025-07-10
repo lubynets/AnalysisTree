@@ -19,7 +19,7 @@ void PlainTreeFiller::SetFieldsToIgnore(const std::vector<std::string>& fields_t
   if (branch_name_.empty()) {
     throw std::runtime_error("PlainTreeFiller::SetFieldsToIgnore() must be called after PlainTreeFiller::AddBranch()\n");
   }
-  for (auto& fti : fields_to_ignore) {
+  for (const auto& fti : fields_to_ignore) {
     fields_to_ignore_.emplace_back((branch_name_ + "." + fti).c_str());
   }
 }
@@ -28,8 +28,37 @@ void PlainTreeFiller::SetFieldsToPreserve(const std::vector<std::string>& fields
   if (branch_name_.empty()) {
     throw std::runtime_error("PlainTreeFiller::SetFieldsToPreserve() must be called after PlainTreeFiller::AddBranch()\n");
   }
-  for (auto& fti : fields_to_preserve) {
+  for (const auto& fti : fields_to_preserve) {
     fields_to_preserve_.emplace_back((branch_name_ + "." + fti).c_str());
+  }
+}
+
+void PlainTreeFiller::SetFieldsToRename(const std::vector<std::pair<std::string, std::string>>& fields_to_rename) {
+  if (branch_name_.empty()) {
+    throw std::runtime_error("PlainTreeFiller::SetFieldsToRename() must be called after PlainTreeFiller::AddBranch()\n");
+  }
+  for (const auto& ftr : fields_to_rename) {
+    fields_to_rename_.emplace((branch_name_ + "." + ftr.first).c_str(), (branch_name_ + "." + ftr.second).c_str());
+  }
+}
+
+void PlainTreeFiller::CheckIgnorePreserveRenameFields(const std::vector<std::string>& leafNames) const {
+  for (const auto& fti : fields_to_ignore_) {
+    if (std::find(leafNames.begin(), leafNames.end(), fti) == leafNames.end()) {
+      std::cout << "WARNING PlainTreeFiller::CheckIgnorePreserveRenameFields(): field " << fti << " is set to be ignored, but it is absent among input fields\n";
+    }
+  }
+
+  for (const auto& ftp : fields_to_preserve_) {
+    if (std::find(leafNames.begin(), leafNames.end(), ftp) == leafNames.end()) {
+      std::cout << "WARNING PlainTreeFiller::CheckIgnorePreserveRenameFields(): field " << ftp << " is set to be preserved, but it is absent among input fields\n";
+    }
+  }
+
+  for (const auto& ftr : fields_to_rename_) {
+    if (std::find(leafNames.begin(), leafNames.end(), ftr.first) == leafNames.end()) {
+      std::cout << "WARNING PlainTreeFiller::CheckIgnorePreserveRenameFields(): field " << ftr.first << " is set to be renamed, but it is absent among input fields\n";
+    }
   }
 }
 
@@ -39,8 +68,8 @@ void PlainTreeFiller::Init() {
     auto mapF = config_->GetBranchConfig(branch_name_).GetMap<float>();
     auto mapI = config_->GetBranchConfig(branch_name_).GetMap<int>();
     auto mapB = config_->GetBranchConfig(branch_name_).GetMap<bool>();
-    for (auto& m : {mapF, mapI, mapB}) {
-      for (auto& me : m) {
+    for (const auto& m : {mapF, mapI, mapB}) {
+      for (const auto& me : m) {
         if (me.second.id_ < 0) defaultFieldsNames.emplace_back(me.first);
       }
     }
@@ -79,23 +108,32 @@ void PlainTreeFiller::Init() {
 
   if (vars_.size() != vars.size()) throw std::runtime_error("PlainTreeFiller::Init(): vars_.size() != vars.size()");
 
+  std::vector<std::string> leafNames;
+  for (int iVar = 0, nVars = vars.size(); iVar < nVars; ++iVar) {
+    leafNames.emplace_back(vars[iVar].GetName());
+  }
+  CheckIgnorePreserveRenameFields(leafNames);
+
   file_ = TFile::Open(file_name_.c_str(), "recreate");
   plain_tree_ = new TTree(tree_name_.c_str(), "Plain Tree");
   plain_tree_->SetAutoSave(0);
-  for (size_t i = 0; i < vars.size(); ++i) {
-    std::string leaf_name = vars[i].GetName();
+  for (int iLeaf = 0, nLeafs = leafNames.size(); iLeaf < nLeafs; ++iLeaf) {
+    std::string leaf_name = leafNames.at(iLeaf);
     if (!fields_to_ignore_.empty() && std::find(fields_to_ignore_.begin(), fields_to_ignore_.end(), leaf_name) != fields_to_ignore_.end()) continue;
     if (!fields_to_preserve_.empty() && std::find(fields_to_preserve_.begin(), fields_to_preserve_.end(), leaf_name) == fields_to_preserve_.end()) continue;
+    if (!fields_to_rename_.empty() && fields_to_rename_.find(leaf_name) != fields_to_rename_.end()) {
+      leaf_name = fields_to_rename_.at(leaf_name);
+    }
     if (!is_prepend_leaves_with_branchname_) leaf_name.erase(0, branch_name_.size() + 1);
     std::replace(leaf_name.begin(), leaf_name.end(), '.', '_');
-    if (vars_.at(i).type_ == Types::kFloat) plain_tree_->Branch(leaf_name.c_str(), &vars_.at(i).float_, Form("%s/F", leaf_name.c_str()));
-    else if (vars_.at(i).type_ == Types::kInteger)
-      plain_tree_->Branch(leaf_name.c_str(), &vars_.at(i).int_, Form("%s/I", leaf_name.c_str()));
-    else if (vars_.at(i).type_ == Types::kBool)
-      plain_tree_->Branch(leaf_name.c_str(), &vars_.at(i).bool_, Form("%s/O", leaf_name.c_str()));
+    if (vars_.at(iLeaf).type_ == Types::kFloat) plain_tree_->Branch(leaf_name.c_str(), &vars_.at(iLeaf).float_, Form("%s/F", leaf_name.c_str()));
+    else if (vars_.at(iLeaf).type_ == Types::kInteger)
+      plain_tree_->Branch(leaf_name.c_str(), &vars_.at(iLeaf).int_, Form("%s/I", leaf_name.c_str()));
+    else if (vars_.at(iLeaf).type_ == Types::kBool)
+      plain_tree_->Branch(leaf_name.c_str(), &vars_.at(iLeaf).bool_, Form("%s/O", leaf_name.c_str()));
   }
 
-  for (auto& cm : cuts_map_) {
+  for (const auto& cm : cuts_map_) {
     if (cm.second != nullptr) {
       cm.second->Init(*(TaskManager::GetInstance()->GetChain()->GetConfiguration()));
     }

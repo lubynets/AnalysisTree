@@ -65,7 +65,7 @@ BranchConfig& Configuration::GetBranchConfig(const std::string& name) {
 }
 
 const BranchConfig& Configuration::GetBranchConfig(const std::string& name) const {
-  for (auto& branch : branches_) {
+  for (const auto& branch : branches_) {
     if (branch.second.GetName() == name)
       return branch.second;
   }
@@ -187,7 +187,7 @@ void Configuration::RemoveBranchConfig(const std::string& branchname) {
 
 std::vector<std::string> Configuration::GetMatchesOfBranch(const std::string& branchname) const {
   std::vector<std::string> matches{};
-  for (auto& ma : matches_) {
+  for (const auto& ma : matches_) {
     if (ma.GetFirstBranchName() == branchname || ma.GetSecondBranchName() == branchname)
       matches.emplace_back(ma.GetDataBranchName());
   }

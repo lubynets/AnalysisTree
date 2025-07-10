@@ -55,7 +55,8 @@ class TaskManager {
   * Initialization in case of only creating AnalysisTree
   */
   virtual void Init();
-  virtual void Run(long long nEvents = -1);
+  void Run(long long nEventFrom, long long nEvents);
+  void Run(long long nEvents = -1);
   virtual void Finish();
 
   void AddTask(Task* task) { tasks_.emplace_back(task); }

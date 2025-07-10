@@ -113,7 +113,7 @@ class BranchConfig : public VectorConfig<int>, public VectorConfig<float>, publi
   }
   template<typename T>
   void AddFields(const std::vector<std::string>& names, const std::string& title = "") {
-    for (auto& n : names) {
+    for (const auto& n : names) {
       GuaranteeFieldNameVacancy(n);
     }
     VectorConfig<T>::AddFields(names, title);
@@ -127,7 +127,7 @@ class BranchConfig : public VectorConfig<int>, public VectorConfig<float>, publi
   void RemoveField(const std::string& name);
 
   void RemoveFields(const std::vector<std::string>& names) {
-    for (auto& n : names) {
+    for (const auto& n : names) {
       RemoveField(n);
     }
   }
