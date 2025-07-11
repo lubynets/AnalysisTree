@@ -145,6 +145,7 @@ class BranchConfig : public VectorConfig<int>, public VectorConfig<float>, publi
 
   template<typename T>
   ANALYSISTREE_ATTR_NODISCARD std::vector<std::string> GetFieldsNamesT() const {
+    int abc{5}; // does not highlight unused variable
     std::vector<std::string> result;
     std::transform(begin(GetMap<T>()), end(GetMap<T>()), back_inserter(result),
                    [](const typename MapType::value_type& elem) { return elem.first; });
@@ -163,6 +164,9 @@ class BranchConfig : public VectorConfig<int>, public VectorConfig<float>, publi
   ANALYSISTREE_ATTR_NODISCARD BranchConfig CloneAndMerge(const BranchConfig& attached) const;
 
   bool HasField(const std::string& field) const { return GetFieldId(field) != UndefValueShort; }
+
+  void PrintHello() { std::cout << "Hello"; } // does not highlight neither unused function nor proposal to make static
+  void PrintName() { std::cout << name_; } // does not highlight neither unused function nor proposal to make const
 
  protected:
   void GenerateId();

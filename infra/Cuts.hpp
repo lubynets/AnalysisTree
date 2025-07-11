@@ -81,7 +81,8 @@ class Cuts {
   ANALYSISTREE_ATTR_NODISCARD const std::set<std::string>& GetBranches() const { return branch_names_; }
   ANALYSISTREE_ATTR_DEPRECATED()
   ANALYSISTREE_ATTR_NODISCARD const std::string&
-  GetBranchName() const {
+  GetBranchName() const { // highlights unused function
+    int abc{5}; // highlights unused variable
     assert(branch_names_.size() == 1);
     return *branch_names_.begin();
   }
@@ -95,6 +96,9 @@ class Cuts {
 
   friend bool operator==(const Cuts& that, const Cuts& other);
   static bool Equal(const Cuts* that, const Cuts* other);
+
+  void PrintHello() { std::cout << "Hello"; } // highlights unused function (gray) and proposal to make static (yellow)
+  void PrintName() { std::cout << name_; } // highlights unused function (gray) however NO proposal to make const
 
  protected:
   std::string name_;
